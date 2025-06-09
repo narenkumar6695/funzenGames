@@ -7,6 +7,7 @@ interface UserState {
   isLoginPopupOpen: boolean;
   isLoading: boolean;
   error: string | null;
+  isLoggedIn: boolean;
 }
 
 const initialState: UserState = {
@@ -15,6 +16,7 @@ const initialState: UserState = {
   isLoginPopupOpen: false,
   isLoading: false,
   error: null,
+  isLoggedIn: false,
 };
 
 const userSlice = createSlice({
@@ -31,6 +33,8 @@ const userSlice = createSlice({
       state.currentUser = action.payload;
       state.isRegisterPopupOpen = false;
       state.error = null;
+      state.isLoggedIn = true;
+      sessionStorage.setItem("funzernUseremail", action.payload.email);
     },
     setLoading: (state, action: PayloadAction<boolean>) => {
       state.isLoading = action.payload;
@@ -41,6 +45,12 @@ const userSlice = createSlice({
     logout: (state) => {
       state.currentUser = null;
       state.error = null;
+      state.isLoggedIn = false;
+      sessionStorage.clear();
+    },
+    checkLoginStatus: (state) => {
+      const userEmail = sessionStorage.getItem("funzernUseremail");
+      state.isLoggedIn = !!userEmail;
     },
   },
 });
@@ -52,6 +62,7 @@ export const {
   setLoading,
   setError,
   logout,
+  checkLoginStatus,
 } = userSlice.actions;
 
 export default userSlice.reducer;

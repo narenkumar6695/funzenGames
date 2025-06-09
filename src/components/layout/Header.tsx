@@ -9,8 +9,13 @@ import {
   View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import { COLORS } from "../../constants/ui";
 import { RootState } from "../../store";
-import { setRegisterPopupOpen } from "../../store/slices/userSlice";
+import {
+  checkLoginStatus,
+  logout,
+  setRegisterPopupOpen,
+} from "../../store/slices/userSlice";
 import RegisterPopup from "../common/RegisterPopup";
 
 interface HeaderProps {
@@ -24,32 +29,29 @@ export default function Header({ onShowAllRewards, onLogoClick }: HeaderProps) {
   const isLargeScreen = width >= 1024;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [selectedMenu, setSelectedMenu] = useState("Geometry Arrow");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const slideAnim = useRef(new Animated.Value(-width)).current;
   const dispatch = useDispatch();
-  const { isRegisterPopupOpen } = useSelector((state: RootState) => state.user);
+  const { isRegisterPopupOpen, isLoggedIn } = useSelector(
+    (state: RootState) => state.user
+  );
 
   useEffect(() => {
-    // Check if user is logged in on component mount and when session storage changes
-    const checkLoginStatus = () => {
-      const userEmail = sessionStorage.getItem("funzernUseremail");
-      setIsLoggedIn(!!userEmail);
-    };
-
     // Initial check
-    checkLoginStatus();
+    dispatch(checkLoginStatus());
 
     // Listen for storage changes
-    window.addEventListener("storage", checkLoginStatus);
-
-    return () => {
-      window.removeEventListener("storage", checkLoginStatus);
+    const handleStorageChange = () => {
+      dispatch(checkLoginStatus());
     };
-  }, []);
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+    };
+  }, [dispatch]);
 
   const handleLogout = () => {
-    sessionStorage.clear();
-    setIsLoggedIn(false);
+    dispatch(logout());
     if (isMenuOpen) {
       toggleMenu();
     }
@@ -145,33 +147,101 @@ export default function Header({ onShowAllRewards, onLogoClick }: HeaderProps) {
           </Text>
         </View>
       </TouchableOpacity>
+      {isLoggedIn && !isMediumScreen && (
+        <TouchableOpacity
+          className="mt-4"
+          onPress={() => {
+            handleLogout();
+            if (isMenuOpen) toggleMenu();
+          }}
+        >
+          <View className="bg-[#FFD0D0] px-4 py-2 rounded-md">
+            <View className="flex-row items-center justify-center space-x-2">
+              <FontAwesome name="power-off" size={16} color="#8B3A3A" />
+              <Text
+                className="text-base font-semibold"
+                style={{ color: "#8B3A3A" }}
+              >
+                Logout
+              </Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+      )}
     </>
   );
 
   const renderActionButton = () => (
-    <TouchableOpacity
-      onPress={isLoggedIn ? handleLogout : handleRegisterPress}
-      className={`px-4 py-2 rounded-md ${
-        isLoggedIn ? "bg-[#FFD0D0]" : "bg-[#A1FF00]"
-      }`}
-      style={isLoggedIn ? { backgroundColor: "#FFD0D0" } : undefined}
-    >
-      <View className="flex-row items-center justify-center space-x-2">
-        {isLoggedIn && (
-          <FontAwesome name="power-off" size={16} color="#8B3A3A" />
-        )}
-        <Text
-          className={`font-semibold ${isLoggedIn ? "text-base" : ""}`}
-          style={isLoggedIn ? { color: "#8B3A3A" } : undefined}
+    <View className="flex-row items-center space-x-3">
+      {isLoggedIn && isMediumScreen && (
+        <TouchableOpacity
+          onPress={() => {
+            // TODO: Implement watch ad functionality
+            console.log("Watch ad clicked");
+          }}
+          className="px-4 py-2 rounded-md items-center justify-center"
+          style={{ backgroundColor: "#9FFC8F" }}
         >
-          {isLoggedIn
-            ? "Logout"
-            : isMediumScreen
-            ? "Register & Earn"
-            : "Join & Earn"}
-        </Text>
-      </View>
-    </TouchableOpacity>
+          <Text
+            className="text-base font-semibold text-center"
+            style={{ color: "#666666" }}
+          >
+            Earn 100 coins{"\n"}watch Ad
+          </Text>
+        </TouchableOpacity>
+      )}
+      {isLoggedIn && !isMediumScreen && (
+        <View className="flex-row items-center space-x-2">
+          <View className="bg-white px-3 py-1 rounded-lg">
+            <Text className="text-darkerGray text-base font-semibold mb-0.5">
+              My Balance
+            </Text>
+            <View className="flex-row items-center">
+              <Image
+                source={require("../../../assets/images/vector.png")}
+                style={{ width: 16, height: 16, marginTop: 1 }}
+                tintColor={COLORS.PRIMARY.GREEN}
+                resizeMode="contain"
+              />
+              <Text className="text-darkerGray text-lg font-bold ml-1">
+                1,000
+              </Text>
+            </View>
+          </View>
+          <Image
+            source={require("../../../assets/images/profile.png")}
+            style={{ width: 52, height: 52, borderRadius: 26 }}
+            resizeMode="cover"
+          />
+        </View>
+      )}
+      {isLoggedIn && isMediumScreen && (
+        <TouchableOpacity
+          onPress={handleLogout}
+          className="px-4 py-2 rounded-md bg-[#FFD0D0]"
+        >
+          <View className="flex-row items-center justify-center space-x-2">
+            <FontAwesome name="power-off" size={16} color="#8B3A3A" />
+            <Text
+              className="text-base font-semibold"
+              style={{ color: "#8B3A3A" }}
+            >
+              Logout
+            </Text>
+          </View>
+        </TouchableOpacity>
+      )}
+      {!isLoggedIn && (
+        <TouchableOpacity
+          onPress={handleRegisterPress}
+          className="px-4 py-2 rounded-md bg-[#A1FF00]"
+        >
+          <Text className="font-semibold">
+            {isMediumScreen ? "Register & Earn" : "Join & Earn"}
+          </Text>
+        </TouchableOpacity>
+      )}
+    </View>
   );
 
   return (
