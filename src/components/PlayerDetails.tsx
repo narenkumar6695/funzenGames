@@ -2,11 +2,7 @@ import { Image, Text, TouchableOpacity, View } from "react-native";
 import { useSelector } from "react-redux";
 import { COLORS } from "../constants/ui";
 import { RootState } from "../store";
-
-interface PlayerDetailsProps {
-  onBack: () => void;
-  isFromJoinEarn?: boolean;
-}
+import { PlayerDetailsProps } from "../types";
 
 export default function PlayerDetails({
   onBack,

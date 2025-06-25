@@ -4,13 +4,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { COLORS } from "../../constants/ui";
 import { RootState } from "../../store";
 import { checkLoginStatus } from "../../store/slices/userSlice";
+import { JoinEarnCardProps } from "../../types";
 
 declare const window: Window & typeof globalThis;
-
-interface JoinEarnCardProps {
-  onPress: () => void;
-  showUserDetails?: boolean;
-}
 
 export default function JoinEarnCard({
   onPress,

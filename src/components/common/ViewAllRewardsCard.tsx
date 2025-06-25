@@ -1,8 +1,5 @@
 import { Text, TouchableOpacity, View } from "react-native";
-
-interface ViewAllRewardsCardProps {
-  onPress?: () => void;
-}
+import { ViewAllRewardsCardProps } from "../../types";
 
 export default function ViewAllRewardsCard({
   onPress,

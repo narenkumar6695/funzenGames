@@ -16,13 +16,8 @@ import {
   logout,
   setRegisterPopupOpen,
 } from "../../store/slices/userSlice";
+import { HeaderProps } from "../../types";
 import RegisterPopup from "../common/RegisterPopup";
-
-interface HeaderProps {
-  onShowAllRewards?: () => void;
-  onLogoClick?: () => void;
-  onShowPlayerDetails?: () => void;
-}
 
 export default function Header({
   onShowAllRewards,

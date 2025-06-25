@@ -1,14 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { User } from "../../types";
-
-interface UserState {
-  currentUser: User | null;
-  isRegisterPopupOpen: boolean;
-  isLoginPopupOpen: boolean;
-  isLoading: boolean;
-  error: string | null;
-  isLoggedIn: boolean;
-}
+import { User, UserState } from "../../types";
 
 const initialState: UserState = {
   currentUser: null,

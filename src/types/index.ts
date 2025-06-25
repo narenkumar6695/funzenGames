@@ -130,3 +130,32 @@ export interface GameRating {
   value: number;
   count: number;
 }
+
+export interface PlayerDetailsProps {
+  onBack: () => void;
+  isFromJoinEarn?: boolean;
+}
+
+export interface JoinEarnCardProps {
+  onPress: () => void;
+  showUserDetails?: boolean;
+}
+
+export interface ViewAllRewardsCardProps {
+  onPress?: () => void;
+}
+
+export interface HeaderProps {
+  onShowAllRewards?: () => void;
+  onLogoClick?: () => void;
+  onShowPlayerDetails?: () => void;
+}
+
+export interface UserState {
+  currentUser: User | null;
+  isRegisterPopupOpen: boolean;
+  isLoginPopupOpen: boolean;
+  isLoading: boolean;
+  error: string | null;
+  isLoggedIn: boolean;
+}
