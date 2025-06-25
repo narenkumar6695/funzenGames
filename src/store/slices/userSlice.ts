@@ -19,6 +19,21 @@ const initialState: UserState = {
   isLoggedIn: false,
 };
 
+// Initialize state from sessionStorage if available
+if (typeof window !== "undefined") {
+  const userEmail = sessionStorage.getItem("funzernUseremail");
+  if (userEmail) {
+    initialState.isLoggedIn = true;
+    initialState.currentUser = {
+      id: "1",
+      username: userEmail.split("@")[0],
+      email: userEmail,
+      points: 1000,
+      isRegistered: true,
+    };
+  }
+}
+
 const userSlice = createSlice({
   name: "user",
   initialState,
@@ -32,6 +47,13 @@ const userSlice = createSlice({
     registerUser: (state, action: PayloadAction<User>) => {
       state.currentUser = action.payload;
       state.isRegisterPopupOpen = false;
+      state.error = null;
+      state.isLoggedIn = true;
+      sessionStorage.setItem("funzernUseremail", action.payload.email);
+    },
+    loginUser: (state, action: PayloadAction<User>) => {
+      state.currentUser = action.payload;
+      state.isLoginPopupOpen = false;
       state.error = null;
       state.isLoggedIn = true;
       sessionStorage.setItem("funzernUseremail", action.payload.email);
@@ -51,6 +73,16 @@ const userSlice = createSlice({
     checkLoginStatus: (state) => {
       const userEmail = sessionStorage.getItem("funzernUseremail");
       state.isLoggedIn = !!userEmail;
+      // If logged in but no currentUser, create a basic user object
+      if (userEmail && !state.currentUser) {
+        state.currentUser = {
+          id: "1",
+          username: userEmail.split("@")[0], // Use email prefix as username
+          email: userEmail,
+          points: 1000,
+          isRegistered: true,
+        };
+      }
     },
   },
 });
@@ -59,6 +91,7 @@ export const {
   setRegisterPopupOpen,
   setLoginPopupOpen,
   registerUser,
+  loginUser,
   setLoading,
   setError,
   logout,

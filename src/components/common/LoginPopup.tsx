@@ -9,6 +9,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
 import {
+  loginUser,
   setLoginPopupOpen,
   setRegisterPopupOpen,
 } from "../../store/slices/userSlice";
@@ -124,10 +125,16 @@ export default function LoginPopup({ visible, onClose }: PopupProps) {
       // TODO: Replace with actual API call
       await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulated API call
 
-      // Save user email to sessionStorage
+      // Create user object and dispatch login action
       if (validateEmail(formData.identifier)) {
-        sessionStorage.setItem("funzernUseremail", formData.identifier);
-        window.dispatchEvent(new Event("storage"));
+        const user = {
+          id: "1",
+          username: formData.identifier.split("@")[0], // Use email prefix as username
+          email: formData.identifier,
+          points: 1000,
+          isRegistered: true,
+        };
+        dispatch(loginUser(user));
       }
 
       setFormMessage({

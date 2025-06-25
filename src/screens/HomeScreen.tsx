@@ -19,6 +19,7 @@ import ViewAllRewardsCard from "../components/common/ViewAllRewardsCard";
 import FooterAd from "../components/FooterAd";
 import Header from "../components/layout/Header";
 import MainContentArea from "../components/MainContentArea";
+import PlayerDetails from "../components/PlayerDetails";
 import TopPlayersList from "../components/TopPlayersList";
 import { TOP_PLAYERS } from "../constants/mockData";
 
@@ -27,11 +28,13 @@ export default function HomeScreen() {
   const isLargeScreen = width >= 1024;
   const isMediumScreen = width >= 768 && width < 1024;
   const dispatch = useDispatch();
-  const { isRegisterPopupOpen, isLoginPopupOpen } = useSelector(
+  const { isRegisterPopupOpen, isLoginPopupOpen, isLoggedIn } = useSelector(
     (state: RootState) => state.user
   );
 
   const [showAllRewards, setShowAllRewards] = useState(false);
+  const [showPlayerDetails, setShowPlayerDetails] = useState(false);
+  const [isFromJoinEarn, setIsFromJoinEarn] = useState(false);
 
   const gameImages = [
     require("../../assets/images/game1.png"),
@@ -41,13 +44,35 @@ export default function HomeScreen() {
   ];
   const cards = Array.from({ length: 48 }, (_, i) => gameImages[i % 4]);
 
-  const handleRegisterPress = () => {
-    dispatch(setRegisterPopupOpen(true));
+  const handleJoinEarnPress = () => {
+    if (isLoggedIn) {
+      setIsFromJoinEarn(true);
+      setShowPlayerDetails(true);
+    } else {
+      dispatch(setRegisterPopupOpen(true));
+    }
+  };
+
+  const handleShowPlayerDetails = () => {
+    setIsFromJoinEarn(true);
+    setShowPlayerDetails(true);
+  };
+
+  const handleBackToGames = () => {
+    setShowPlayerDetails(false);
+    setIsFromJoinEarn(false);
+  };
+
+  const handleLogoClick = () => {
+    setShowAllRewards(false);
+    setShowPlayerDetails(false);
+    setIsFromJoinEarn(false);
   };
 
   // Handler to show all rewards, pass to header and ViewAllRewardsCard
-  const handleShowAllRewards = () => setShowAllRewards(true);
-  const handleLogoClick = () => setShowAllRewards(false);
+  const handleShowAllRewards = () => {
+    setShowAllRewards(true);
+  };
 
   return (
     <SafeAreaView className="flex-1 bg-black">
@@ -55,12 +80,16 @@ export default function HomeScreen() {
       <Header
         onShowAllRewards={handleShowAllRewards}
         onLogoClick={handleLogoClick}
+        onShowPlayerDetails={handleShowPlayerDetails}
       />
 
       {/* Left Sidebar (fixed, outside flex row) */}
       <View className="hidden md:block md:fixed md:left-0 md:top-20 md:bottom-0 md:w-[260px] py-3 px-1 z-10 bg-transparent">
         <View className="space-y-4">
-          <JoinEarnCard onPress={handleRegisterPress} />
+          <JoinEarnCard
+            showUserDetails={showPlayerDetails}
+            onPress={handleJoinEarnPress}
+          />
           <RewardsCard />
           <ViewAllRewardsCard onPress={handleShowAllRewards} />
         </View>
@@ -100,6 +129,11 @@ export default function HomeScreen() {
           >
             {showAllRewards ? (
               <AllRewards />
+            ) : showPlayerDetails ? (
+              <PlayerDetails
+                onBack={handleBackToGames}
+                isFromJoinEarn={isFromJoinEarn}
+              />
             ) : (
               <MainContentArea
                 isMediumScreen={isMediumScreen}
@@ -122,6 +156,11 @@ export default function HomeScreen() {
             <View className="flex-col space-y-2">
               {showAllRewards ? (
                 <AllRewards />
+              ) : showPlayerDetails ? (
+                <PlayerDetails
+                  onBack={handleBackToGames}
+                  isFromJoinEarn={isFromJoinEarn}
+                />
               ) : (
                 <MainContentArea
                   isMediumScreen={isMediumScreen}

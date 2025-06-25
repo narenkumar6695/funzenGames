@@ -21,9 +21,14 @@ import RegisterPopup from "../common/RegisterPopup";
 interface HeaderProps {
   onShowAllRewards?: () => void;
   onLogoClick?: () => void;
+  onShowPlayerDetails?: () => void;
 }
 
-export default function Header({ onShowAllRewards, onLogoClick }: HeaderProps) {
+export default function Header({
+  onShowAllRewards,
+  onLogoClick,
+  onShowPlayerDetails,
+}: HeaderProps) {
   const { width } = useWindowDimensions();
   const isMediumScreen = width >= 768;
   const isLargeScreen = width >= 1024;
@@ -191,7 +196,11 @@ export default function Header({ onShowAllRewards, onLogoClick }: HeaderProps) {
         </TouchableOpacity>
       )}
       {isLoggedIn && !isMediumScreen && (
-        <View className="flex-row items-center space-x-2">
+        <TouchableOpacity
+          onPress={onShowPlayerDetails}
+          className="flex-row items-center space-x-2"
+          activeOpacity={0.8}
+        >
           <View className="bg-white px-3 py-1 rounded-lg">
             <Text className="text-darkerGray text-base font-semibold mb-0.5">
               My Balance
@@ -213,7 +222,7 @@ export default function Header({ onShowAllRewards, onLogoClick }: HeaderProps) {
             style={{ width: 52, height: 52, borderRadius: 26 }}
             resizeMode="cover"
           />
-        </View>
+        </TouchableOpacity>
       )}
       {isLoggedIn && isMediumScreen && (
         <TouchableOpacity
