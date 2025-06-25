@@ -1,227 +1,140 @@
-import { Image, Text, TouchableOpacity, View } from "react-native";
-import { useSelector } from "react-redux";
-import { COLORS } from "../constants/ui";
-import { RootState } from "../store";
+import { useState } from "react";
+import {
+  Image,
+  ScrollView,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { PLAYER_DETAILS_DUMMY } from "../constants/mockData";
 import { PlayerDetailsProps } from "../types";
 
 export default function PlayerDetails({
   onBack,
   isFromJoinEarn = false,
 }: PlayerDetailsProps) {
-  const { currentUser } = useSelector((state: RootState) => state.user);
+  const { coins, recentGameActivity, recentPurchases, userInfo } =
+    PLAYER_DETAILS_DUMMY;
+  const [address, setAddress] = useState(userInfo.address);
 
   return (
-    <View className="w-full px-2 pt-2">
-      <View className="bg-darkGray rounded-md mb-4 overflow-hidden">
-        {/* Header with back button */}
-        <View className="flex-row items-center justify-between p-4 border-b border-gray-700">
-          <TouchableOpacity
-            onPress={onBack}
-            className="flex-row items-center"
-            activeOpacity={0.7}
-          >
-            <Text className="text-white text-lg mr-2">←</Text>
-            <Text className="text-white text-lg font-semibold">
-              Back to Games
-            </Text>
-          </TouchableOpacity>
-          <View className="flex-row items-center">
-            <Image
-              source={require("../../assets/images/vector.png")}
-              style={{ width: 20, height: 20 }}
-              tintColor={COLORS.PRIMARY.GREEN}
-              resizeMode="contain"
-            />
-            <Text className="text-white text-xl font-bold ml-2">
-              {currentUser?.points || 1250}
-            </Text>
-          </View>
-        </View>
-
-        {/* Player Profile Section */}
-        <View className="p-4">
-          <View className="flex-row items-center mb-6">
-            <Image
-              source={require("../../assets/images/profile.png")}
-              style={{ width: 80, height: 80, borderRadius: 40 }}
-              resizeMode="cover"
-            />
-            <View className="ml-4 flex-1">
-              <Text className="text-white text-2xl font-bold mb-1">
-                {isFromJoinEarn
-                  ? currentUser?.username || "Player"
-                  : "Player123"}
-              </Text>
-              <Text className="text-gray-400 text-sm">
-                {isFromJoinEarn
-                  ? `Email: ${currentUser?.email || "player@example.com"}`
-                  : "Member since March 2024"}
-              </Text>
-              <View className="flex-row items-center mt-2">
-                <View className="bg-green-500 w-3 h-3 rounded-full mr-2"></View>
-                <Text className="text-green-500 text-sm">Online</Text>
-              </View>
-            </View>
-          </View>
-
-          {/* Stats Grid */}
-          <View className="grid grid-cols-2 gap-4 mb-6">
-            <View className="bg-black rounded-lg p-4">
-              <Text className="text-gray-400 text-sm mb-1">Games Played</Text>
-              <Text className="text-white text-2xl font-bold">
-                {isFromJoinEarn ? "0" : "247"}
-              </Text>
-            </View>
-            <View className="bg-black rounded-lg p-4">
-              <Text className="text-gray-400 text-sm mb-1">Win Rate</Text>
-              <Text className="text-white text-2xl font-bold">
-                {isFromJoinEarn ? "0%" : "68%"}
-              </Text>
-            </View>
-            <View className="bg-black rounded-lg p-4">
-              <Text className="text-gray-400 text-sm mb-1">Total Earnings</Text>
-              <Text className="text-white text-2xl font-bold">
-                {isFromJoinEarn ? "₿0" : "₿2.5K"}
-              </Text>
-            </View>
-            <View className="bg-black rounded-lg p-4">
-              <Text className="text-gray-400 text-sm mb-1">Rank</Text>
-              <Text className="text-white text-2xl font-bold">
-                {isFromJoinEarn ? "Unranked" : "#42"}
-              </Text>
-            </View>
-          </View>
-
-          {/* Recent Activity */}
-          <View className="mb-6">
-            <Text className="text-white text-xl font-semibold mb-4">
-              Recent Activity
-            </Text>
-            <View className="space-y-3">
-              {isFromJoinEarn ? (
-                <View className="bg-black rounded-lg p-6">
-                  <Text className="text-gray-400 text-center text-lg">
-                    No activity yet. Start playing games to see your activity
-                    here!
-                  </Text>
-                </View>
-              ) : (
-                [
-                  {
-                    game: "Puzzle Master",
-                    result: "Won",
-                    amount: "+150",
-                    time: "2 hours ago",
-                  },
-                  {
-                    game: "Speed Runner",
-                    result: "Lost",
-                    amount: "-50",
-                    time: "4 hours ago",
-                  },
-                  {
-                    game: "Memory Match",
-                    result: "Won",
-                    amount: "+200",
-                    time: "1 day ago",
-                  },
-                  {
-                    game: "Logic Quest",
-                    result: "Won",
-                    amount: "+100",
-                    time: "2 days ago",
-                  },
-                ].map((activity, index) => (
-                  <View
-                    key={index}
-                    className="flex-row items-center justify-between bg-black rounded-lg p-3"
-                  >
-                    <View className="flex-1">
-                      <Text className="text-white font-medium">
-                        {activity.game}
-                      </Text>
-                      <Text className="text-gray-400 text-sm">
-                        {activity.time}
-                      </Text>
-                    </View>
-                    <View className="flex-row items-center">
-                      <Text
-                        className={`font-bold mr-2 ${
-                          activity.result === "Won"
-                            ? "text-green-500"
-                            : "text-red-500"
-                        }`}
-                      >
-                        {activity.amount}
-                      </Text>
-                      <View
-                        className={`px-2 py-1 rounded-full ${
-                          activity.result === "Won"
-                            ? "bg-green-900"
-                            : "bg-red-900"
-                        }`}
-                      >
-                        <Text
-                          className={`text-xs font-medium ${
-                            activity.result === "Won"
-                              ? "text-green-300"
-                              : "text-red-300"
-                          }`}
-                        >
-                          {activity.result}
-                        </Text>
-                      </View>
-                    </View>
-                  </View>
-                ))
-              )}
-            </View>
-          </View>
-
-          {/* Achievements */}
-          <View>
-            <Text className="text-white text-xl font-semibold mb-4">
-              Achievements
-            </Text>
-            <View className="grid grid-cols-3 gap-3">
-              {isFromJoinEarn ? (
-                <View className="col-span-3 bg-black rounded-lg p-6">
-                  <Text className="text-gray-400 text-center text-lg">
-                    No achievements yet. Play games to unlock achievements!
-                  </Text>
-                </View>
-              ) : (
-                [
-                  { name: "First Win", icon: "🏆", unlocked: true },
-                  { name: "10 Games", icon: "🎮", unlocked: true },
-                  { name: "100 Points", icon: "⭐", unlocked: true },
-                  { name: "Win Streak", icon: "🔥", unlocked: false },
-                  { name: "Speed Demon", icon: "⚡", unlocked: false },
-                  { name: "Puzzle Master", icon: "🧩", unlocked: true },
-                ].map((achievement, index) => (
-                  <View
-                    key={index}
-                    className={`rounded-lg p-3 items-center ${
-                      achievement.unlocked ? "bg-green-900" : "bg-gray-800"
-                    }`}
-                  >
-                    <Text className="text-2xl mb-1">{achievement.icon}</Text>
-                    <Text
-                      className={`text-xs text-center ${
-                        achievement.unlocked
-                          ? "text-green-300"
-                          : "text-gray-500"
-                      }`}
-                    >
-                      {achievement.name}
-                    </Text>
-                  </View>
-                ))
-              )}
-            </View>
-          </View>
+    <ScrollView className="w-full px-2 pt-2">
+      {/* Coins Collected */}
+      <View className="bg-darkGray rounded-md mb-4 p-6 flex-row items-center">
+        <Image
+          source={require("../../assets/images/vector.png")}
+          style={{ width: 60, height: 60, marginRight: 16 }}
+          resizeMode="contain"
+        />
+        <View>
+          <Text className="text-white text-lg">Coins Collected</Text>
+          <Text className="text-primaryGreen text-5xl font-bold">{coins}</Text>
         </View>
       </View>
-    </View>
+
+      {/* Recent Game Activity */}
+      <Text className="text-white text-xl font-semibold mb-2">
+        Recent Game Activity
+      </Text>
+      <View className="bg-darkGray rounded-md mb-4">
+        <View className="flex-row px-4 py-2 border-b border-gray-700">
+          <Text className="flex-1 text-white font-semibold">Date</Text>
+          <Text className="flex-1 text-white font-semibold">Time</Text>
+          <Text className="flex-1 text-white font-semibold">Gameplayed</Text>
+          <Text className="flex-1 text-white font-semibold">
+            Coins Collected
+          </Text>
+        </View>
+        {recentGameActivity.map((item, idx) => (
+          <View
+            key={idx}
+            className="flex-row px-4 py-1 border-b border-gray-800"
+          >
+            <Text className="flex-1 text-gray-200">{item.date}</Text>
+            <Text className="flex-1 text-gray-200">{item.time}</Text>
+            <Text className="flex-1 text-gray-200">{item.game}</Text>
+            <Text className="flex-1 text-primaryGreen">{item.coins} Coins</Text>
+          </View>
+        ))}
+        <View className="flex-row justify-end px-4 py-2">
+          <Text className="text-primaryGreen text-right">
+            View all more &gt;
+          </Text>
+        </View>
+      </View>
+
+      {/* Recent Purchases */}
+      <Text className="text-white text-xl font-semibold mb-2">
+        Recent Purchases
+      </Text>
+      <View className="bg-darkGray rounded-md mb-4 px-4 py-4">
+        {recentPurchases.length === 0 ? (
+          <Text className="text-gray-300">No purchases made yet</Text>
+        ) : (
+          // Map purchases here
+          recentPurchases.map((purchase, idx) => (
+            <Text key={idx} className="text-gray-200">
+              {purchase}
+            </Text>
+          ))
+        )}
+      </View>
+
+      {/* Your Informations */}
+      <Text className="text-white text-xl font-semibold mb-2">
+        Your Informations
+      </Text>
+      <View className="flex-row items-start mb-4">
+        <View className="flex-1 mr-4">
+          <TextInput
+            className="bg-darkGray text-white rounded-md px-4 py-3 mb-3"
+            placeholder="Email"
+            placeholderTextColor="#888"
+            value={userInfo.email}
+            editable={false}
+          />
+          <TextInput
+            className="bg-darkGray text-white rounded-md px-4 py-3 mb-3"
+            placeholder="Name"
+            placeholderTextColor="#888"
+            value={userInfo.name}
+            editable={false}
+          />
+          <TextInput
+            className="bg-darkGray text-white rounded-md px-4 py-3 mb-3"
+            placeholder="Phone"
+            placeholderTextColor="#888"
+            value={userInfo.phone}
+            editable={false}
+          />
+          <TextInput
+            className="bg-darkGray text-white rounded-md px-4 py-3 mb-3"
+            placeholder="Address"
+            placeholderTextColor="#888"
+            value={address}
+            onChangeText={setAddress}
+          />
+        </View>
+        <Image
+          source={require("../../assets/images/profile.png")}
+          style={{
+            width: 100,
+            height: 100,
+            borderRadius: 50,
+            borderWidth: 4,
+            borderColor: "#A1FF00",
+          }}
+        />
+      </View>
+      <TouchableOpacity
+        className="bg-primaryGreen rounded-md px-4 py-3 mb-8 self-end"
+        style={{ minWidth: 200 }}
+      >
+        <Text className="text-black text-lg font-semibold text-center">
+          Verify Address with OTP
+        </Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 }
