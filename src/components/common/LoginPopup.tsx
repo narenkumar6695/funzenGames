@@ -18,7 +18,7 @@ import {
   LoginFormData,
   LoginFormErrors,
   PopupProps,
-} from "../../types/common";
+} from "../../types";
 import { validateEmail, validatePhone } from "../../utils/validation";
 
 import { useEffect, useState } from "react";

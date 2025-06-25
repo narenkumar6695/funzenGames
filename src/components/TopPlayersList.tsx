@@ -1,5 +1,5 @@
 import { Image, Text, View } from "react-native";
-import { Player } from "../types"; // adjust path as needed
+import { Player } from "../types";
 
 export default function TopPlayersList({ players }: { players: Player[] }) {
   // Top 5 and last player
@@ -17,7 +17,7 @@ export default function TopPlayersList({ players }: { players: Player[] }) {
           className="flex-row items-center justify-between bg-gray-500 rounded mb-1 px-2 py-0.5"
         >
           <Text className="text-white text-base">{`${idx + 1}. ${
-            player.name
+            player.username
           }`}</Text>
           <View className="flex-row items-center">
             <Image
@@ -26,7 +26,7 @@ export default function TopPlayersList({ players }: { players: Player[] }) {
               tintColor="#A1FF00"
               resizeMode="contain"
             />
-            <Text className="text-white text-base">{player.score}</Text>
+            <Text className="text-white text-base">{player.points}</Text>
           </View>
         </View>
       ))}
@@ -34,7 +34,7 @@ export default function TopPlayersList({ players }: { players: Player[] }) {
         <Text className="text-white text-lg">••••••••</Text>
       </View>
       <View className="flex-row items-center justify-between bg-gray-500 rounded px-2 py-0.5">
-        <Text className="text-white text-base">{`50. ${last.name}`}</Text>
+        <Text className="text-white text-base">{`50. ${last.username}`}</Text>
         <View className="flex-row items-center">
           <Image
             source={require("../../assets/images/vector.png")}
@@ -42,7 +42,7 @@ export default function TopPlayersList({ players }: { players: Player[] }) {
             tintColor="#A1FF00"
             resizeMode="contain"
           />
-          <Text className="text-white text-base">{last.score}</Text>
+          <Text className="text-white text-base">{last.points}</Text>
         </View>
       </View>
     </View>

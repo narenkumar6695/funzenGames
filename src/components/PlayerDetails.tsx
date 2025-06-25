@@ -37,7 +37,7 @@ export default function PlayerDetails({
               resizeMode="contain"
             />
             <Text className="text-white text-xl font-bold ml-2">
-              {(currentUser?.points || 1, 250)}
+              {currentUser?.points || 1250}
             </Text>
           </View>
         </View>

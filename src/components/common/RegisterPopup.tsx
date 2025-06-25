@@ -12,12 +12,7 @@ import {
   setLoginPopupOpen,
   setRegisterPopupOpen,
 } from "../../store/slices/userSlice";
-import {
-  FormData,
-  FormErrors,
-  FormMessage,
-  PopupProps,
-} from "../../types/common";
+import { FormData, FormErrors, FormMessage, PopupProps } from "../../types";
 import {
   getPasswordError,
   validateEmail,
