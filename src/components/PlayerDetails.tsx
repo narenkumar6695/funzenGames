@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import { PLAYER_DETAILS_DUMMY } from "../constants/mockData";
 import { PlayerDetailsProps } from "../types";
+import OtpPopup from "./OtpPopup";
 
 export default function PlayerDetails({
   onBack,
@@ -17,19 +18,20 @@ export default function PlayerDetails({
   const { coins, recentGameActivity, recentPurchases, userInfo } =
     PLAYER_DETAILS_DUMMY;
   const [address, setAddress] = useState(userInfo.address);
+  const [otpVisible, setOtpVisible] = useState(false);
 
   return (
     <ScrollView className="w-full px-2 pt-2">
       {/* Coins Collected */}
-      <View className="bg-darkGray rounded-md mb-4 p-6 flex-row items-center">
-        <Image
-          source={require("../../assets/images/vector.png")}
-          style={{ width: 60, height: 60, marginRight: 16 }}
-          resizeMode="contain"
-        />
-        <View>
-          <Text className="text-white text-lg">Coins Collected</Text>
-          <Text className="text-primaryGreen text-5xl font-bold">{coins}</Text>
+      <View className="bg-darkGray rounded-md mb-4 p-3 justify-center">
+        <Text className="text-white text-lg mb-2">Coins Collected</Text>
+        <View className="flex-row items-center">
+          <Image
+            source={require("../../assets/images/vector.png")}
+            style={{ width: 60, height: 60, marginRight: 16 }}
+            resizeMode="contain"
+          />
+          <Text className="text-white text-5xl font-bold">{coins}</Text>
         </View>
       </View>
 
@@ -51,10 +53,12 @@ export default function PlayerDetails({
             key={idx}
             className="flex-row px-4 py-1 border-b border-gray-800"
           >
-            <Text className="flex-1 text-gray-200">{item.date}</Text>
-            <Text className="flex-1 text-gray-200">{item.time}</Text>
-            <Text className="flex-1 text-gray-200">{item.game}</Text>
-            <Text className="flex-1 text-primaryGreen">{item.coins} Coins</Text>
+            <Text className="flex-1 text-rewardLightGreen">{item.date}</Text>
+            <Text className="flex-1 text-rewardLightGreen">{item.time}</Text>
+            <Text className="flex-1 text-rewardLightGreen">{item.game}</Text>
+            <Text className="flex-1 text-rewardLightGreen">
+              {item.coins} Coins
+            </Text>
           </View>
         ))}
         <View className="flex-row justify-end px-4 py-2">
@@ -70,7 +74,7 @@ export default function PlayerDetails({
       </Text>
       <View className="bg-darkGray rounded-md mb-4 px-4 py-4">
         {recentPurchases.length === 0 ? (
-          <Text className="text-gray-300">No purchases made yet</Text>
+          <Text className="text-rewardLightGreen">No purchases made yet</Text>
         ) : (
           // Map purchases here
           recentPurchases.map((purchase, idx) => (
@@ -85,7 +89,7 @@ export default function PlayerDetails({
       <Text className="text-white text-xl font-semibold mb-2">
         Your Informations
       </Text>
-      <View className="flex-row items-start mb-4">
+      <View className="flex-row items-start mb-2">
         <View className="flex-1 mr-4">
           <TextInput
             className="bg-darkGray text-white rounded-md px-4 py-3 mb-3"
@@ -108,13 +112,6 @@ export default function PlayerDetails({
             value={userInfo.phone}
             editable={false}
           />
-          <TextInput
-            className="bg-darkGray text-white rounded-md px-4 py-3 mb-3"
-            placeholder="Address"
-            placeholderTextColor="#888"
-            value={address}
-            onChangeText={setAddress}
-          />
         </View>
         <Image
           source={require("../../assets/images/profile.png")}
@@ -127,14 +124,33 @@ export default function PlayerDetails({
           }}
         />
       </View>
+      <TextInput
+        className="bg-darkGray text-white rounded-md px-4 py-3 mb-3 w-full"
+        placeholder="Address"
+        placeholderTextColor="#888"
+        value={address}
+        onChangeText={setAddress}
+        multiline={true}
+        numberOfLines={4}
+        style={{ height: 100, textAlignVertical: "top" }}
+      />
       <TouchableOpacity
-        className="bg-primaryGreen rounded-md px-4 py-3 mb-8 self-end"
+        className={`rounded-md px-4 py-1 mb-8 w-full md:self-end md:w-auto ${
+          address.trim() ? "bg-primaryGreen" : "bg-gray-500"
+        }`}
         style={{ minWidth: 200 }}
+        disabled={!address.trim()}
+        onPress={() => setOtpVisible(true)}
       >
-        <Text className="text-black text-lg font-semibold text-center">
+        <Text
+          className={`text-lg font-semibold text-center ${
+            address.trim() ? "text-black" : "text-gray-300"
+          }`}
+        >
           Verify Address with OTP
         </Text>
       </TouchableOpacity>
+      <OtpPopup visible={otpVisible} onClose={() => setOtpVisible(false)} />
     </ScrollView>
   );
 }

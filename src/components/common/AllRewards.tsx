@@ -1,10 +1,13 @@
+import { useState } from "react";
 import {
   Image,
   ScrollView,
   Text,
+  TouchableOpacity,
   View,
   useWindowDimensions,
 } from "react-native";
+import NotEnoughCoinPopup from "./NotEnoughCoinPopup";
 
 // Remove statusKeys, define StatusType directly
 // const statusKeys = ["Limited", "Low", "Available", "Unavailable"] as const;
@@ -34,12 +37,13 @@ const statusColors: Record<StatusType, { color: string; label: string }> = {
 export default function AllRewards() {
   const { width } = useWindowDimensions();
   const isXL = width >= 1280;
+  const [showNotEnoughCoin, setShowNotEnoughCoin] = useState(false);
 
   return (
-    <ScrollView className="flex-1 bg-black pt-4 pb-6">
+    <ScrollView className="flex-1 bg-black pt-2 pb-2">
       <Text
-        className="text-white font-extrabold text-center mt-4 px-3"
-        style={{ fontSize: 60 }}
+        className="text-white font-extrabold text-center px-3"
+        style={{ fontSize: 42 }}
       >
         All Rewards
       </Text>
@@ -67,7 +71,7 @@ export default function AllRewards() {
                           <View className="flex-1 flex-col justify-between pr-4">
                             <Text
                               className="text-white font-extrabold mb-2 leading-tight"
-                              style={{ fontSize: 30 }}
+                              style={{ fontSize: 22 }}
                             >
                               {reward.name}
                             </Text>
@@ -85,9 +89,13 @@ export default function AllRewards() {
                                 resizeMode="contain"
                                 tintColor="#000"
                               />
-                              <Text className="text-black font-bold text-xl">
-                                {reward.points}
-                              </Text>
+                              <TouchableOpacity
+                                onPress={() => setShowNotEnoughCoin(true)}
+                              >
+                                <Text className="text-black font-bold text-xl">
+                                  {reward.points}
+                                </Text>
+                              </TouchableOpacity>
                             </View>
                             <Text className="text-white text-base mt-2">
                               worth {reward.worth}
@@ -126,7 +134,7 @@ export default function AllRewards() {
                               <Text
                                 style={{
                                   color: statusColors[reward.status].color,
-                                  fontSize: 18,
+                                  fontSize: 14,
                                   fontWeight: "bold",
                                 }}
                               >
@@ -151,7 +159,7 @@ export default function AllRewards() {
                   <View className="flex-1 flex-col justify-between pr-4">
                     <Text
                       className="text-white font-extrabold mb-2 leading-tight"
-                      style={{ fontSize: 30 }}
+                      style={{ fontSize: 22 }}
                     >
                       {reward.name}
                     </Text>
@@ -165,9 +173,13 @@ export default function AllRewards() {
                         resizeMode="contain"
                         tintColor="#000"
                       />
-                      <Text className="text-black font-bold text-xl">
-                        {reward.points}
-                      </Text>
+                      <TouchableOpacity
+                        onPress={() => setShowNotEnoughCoin(true)}
+                      >
+                        <Text className="text-black font-bold text-xl">
+                          {reward.points}
+                        </Text>
+                      </TouchableOpacity>
                     </View>
                     <Text className="text-white text-base mt-2">
                       worth {reward.worth}
@@ -201,7 +213,7 @@ export default function AllRewards() {
                       <Text
                         style={{
                           color: statusColors[reward.status].color,
-                          fontSize: 18,
+                          fontSize: 14,
                           fontWeight: "bold",
                         }}
                       >
@@ -213,6 +225,20 @@ export default function AllRewards() {
               </View>
             ))}
       </View>
+      <View className="flex-row justify-end px-4 py-2">
+        <TouchableOpacity
+          className="bg-darkGray rounded px-2 py-0.5"
+          style={{ minWidth: 70, maxWidth: 100 }}
+        >
+          <Text className="text-primaryGreen text-center text-xs">
+            View all more &gt;
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <NotEnoughCoinPopup
+        visible={showNotEnoughCoin}
+        onClose={() => setShowNotEnoughCoin(false)}
+      />
     </ScrollView>
   );
 }

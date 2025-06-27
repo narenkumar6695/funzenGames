@@ -46,8 +46,16 @@ export default function HomeScreen() {
 
   const handleJoinEarnPress = () => {
     if (isLoggedIn) {
-      setIsFromJoinEarn(true);
-      setShowPlayerDetails(true);
+      if (showAllRewards || showPlayerDetails) {
+        // If not on MainContentArea, go to MainContentArea
+        setShowAllRewards(false);
+        setShowPlayerDetails(false);
+        setIsFromJoinEarn(false);
+      } else {
+        // On MainContentArea, open PlayerDetails
+        setIsFromJoinEarn(true);
+        setShowPlayerDetails(true);
+      }
     } else {
       dispatch(setRegisterPopupOpen(true));
     }
@@ -87,7 +95,7 @@ export default function HomeScreen() {
       <View className="hidden md:block md:fixed md:left-0 md:top-20 md:bottom-0 md:w-[260px] py-3 px-1 z-10 bg-transparent">
         <View className="space-y-4">
           <JoinEarnCard
-            showUserDetails={showPlayerDetails}
+            showUserDetails={showPlayerDetails && !showAllRewards}
             onPress={handleJoinEarnPress}
           />
           <RewardsCard />
